@@ -29,8 +29,6 @@ export const TabbedDash: React.FC<TabbedDashProps> = ({
   const [configurationData, setConfigurationData] = useState<
     ConfigurationData
   >()
-  const [isAdmin, setIsAdmin] = React.useState<boolean>(true)
-  const [userRoles, setUserRoles] = React.useState<string[]>()
 
   useEffect(() => {
     const initialize = async () => {
@@ -62,43 +60,7 @@ export const TabbedDash: React.FC<TabbedDashProps> = ({
       )
     }
 
-    /**
-     * Check user roles against Admin or Config Role membership
-     */
-    const checkAdmin = async () => {
-      try {
-        const { configRoles = [] } = await extensionSDK.refreshContextData()
-        const allRoles = await sdk
-          .ok(sdk.all_roles({ fields: 'id, name' }))
-          .then((value) => {
-            return value
-          })
-        const { role_ids: userRoles } = await sdk.ok(sdk.me()).then((value) => {
-          return value
-        })
-
-        // Check if user has role Admin
-        const { id: adminRoleId } =
-          allRoles.find((role) => role.name === 'Admin') || {}
-        const isAdmin = userRoles.includes(adminRoleId)
-
-        // Check if user has any role in config roles.
-        // Config roles are stored by name in context data and
-        // needs Looker role id reference for follow-on comparison.
-        const config_roles_by_id = allRoles.filter((role) =>
-          configRoles.includes(role.name)
-        )
-        const isConfigRole = userRoles.some((user_role: number) =>
-          config_roles_by_id.find((config_role) => config_role.id === user_role)
-        )
-        setIsAdmin(isAdmin || isConfigRole)
-      } catch (error) {
-        console.error(error)
-      }
-    }
-
     initialize()
-    checkAdmin()
   }, [])
 
   const updateConfigurationData = async (
@@ -128,7 +90,6 @@ export const TabbedDash: React.FC<TabbedDashProps> = ({
                   dashboards={configurationData.dashboards}
                   configurationData={configurationData}
                   updateConfigurationData={updateConfigurationData}
-                  isAdmin={isAdmin}
                 />
               </Route>
           )}

@@ -196,40 +196,6 @@ export const Configure: React.FC<ConfigureProps> = ({
           />
 
           <Divider mt="medium" appearance="onDark" />
-          <Heading as="h3">Extension Config Roles</Heading>
-
-          {localConfigurationData.configRoles.map((role, index) => {
-            return (
-              <div key={`role${index+1}`}>
-                <Space>
-                <FieldText
-                  value={role}
-                  onChange={(e) =>
-                    changeConfigRole(
-                      e as React.ChangeEvent<HTMLInputElement>,
-                      index
-                    )
-                  }
-                />
-                <IconButton
-                      icon="Trash"
-                      label="Delete Dashboard"
-                      size="small"
-                      color="critical"
-                      onClick={() => deleteRole(index)}
-                    />
-                    </Space>
-              </div>
-            )
-          })}
-
-          <Space>
-            <Button iconBefore="CircleAdd" onClick={() => addConfigRole()}>
-              Add Role
-            </Button>
-          </Space>
-
-          <Divider mt="medium" appearance="onDark" />
 
           <Heading as="h3">Configure Dashboard Tabs</Heading>
 

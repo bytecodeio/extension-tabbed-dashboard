@@ -6,5 +6,4 @@ export interface EmbedProps {
   updateConfigurationData(
     configurationData: ConfigurationData
   ): Promise<boolean>
-  isAdmin: boolean
 }

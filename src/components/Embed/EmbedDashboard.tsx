@@ -29,7 +29,6 @@ export const EmbedDashboard: React.FC<EmbedProps> = ({
   dashboards,
   configurationData,
   updateConfigurationData,
-  isAdmin,
 }) => {
   const [dashboardNext, setDashboardNext] = React.useState(true)
   const [running, setRunning] = React.useState(true)
@@ -155,7 +154,6 @@ export const EmbedDashboard: React.FC<EmbedProps> = ({
         </Tabs>
         </div>
     )}
-    {isAdmin ? (
         <div style={configIconLocation}>
           <DialogManager
             content={
@@ -174,10 +172,7 @@ export const EmbedDashboard: React.FC<EmbedProps> = ({
             />
           </DialogManager>
         </div>
-    ) : (
-        ''
-      )}
-      ) 
+    )
     </>
   )
 }

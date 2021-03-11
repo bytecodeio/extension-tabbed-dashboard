@@ -22,7 +22,7 @@
     "@looker/embed-sdk": "1.0.0-beta.6",
     "@looker/extension-sdk": "^0.11.0",
     "@looker/extension-sdk-react": "^0.6.2",
-    "@looker/sdk": "0.3.0-beta.2",
+    "@looker/sdk": "^21.0.8",
     "@types/node": "^12.7.5",
     "@types/react": "^16.9.25",
     "@types/react-dom": "^16.9.3",

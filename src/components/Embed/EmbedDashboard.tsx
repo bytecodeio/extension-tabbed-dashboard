@@ -36,8 +36,10 @@ export const EmbedDashboard: React.FC<EmbedProps> = ({
   const [dashboard, setDashboard] = React.useState<LookerEmbedDashboard>()
   const extensionContext = useContext<ExtensionContextData>(ExtensionContext)
   const [selectedTab, setSelectedTab] = React.useState(0)
+  const [filters, setFilters] = React.useState({})
   const { extensionSDK } = extensionContext
   const sdk = extensionContext.core40SDK
+ 
 
   const StyledTabList = styled(TabList as any)`
     background-color: #f4f4f4;
@@ -109,6 +111,10 @@ export const EmbedDashboard: React.FC<EmbedProps> = ({
     return selectedTab == index ? true : false
   }
 
+  const handleUpdateFilters = (filters: React.SetStateAction<{}>) => {
+    setFilters(filters);
+  };
+
   return (
     <>
     {configurationData.dashboards.length == 0 && (
@@ -147,6 +153,8 @@ export const EmbedDashboard: React.FC<EmbedProps> = ({
                     next={next}
                     extensionContext={extensionContext}
                     setDashboard={setupDashboard}
+                    filters={filters}
+                    handleUpdateFilters={handleUpdateFilters}
                   />
                 </TabPanel>
               )

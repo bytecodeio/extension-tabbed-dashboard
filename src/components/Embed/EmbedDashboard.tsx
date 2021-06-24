@@ -24,6 +24,8 @@ import { Dashboard } from './Dashboard'
 import { EmbedProps } from './types'
 import { Configure } from '../Configure/Configure'
 import { ConfigurationData } from '../../types'
+import _ from 'lodash'
+import { LookerDashboardOptions } from '@looker/embed-sdk/lib/types'
 
 export const EmbedDashboard: React.FC<EmbedProps> = ({
   dashboards,
@@ -37,10 +39,51 @@ export const EmbedDashboard: React.FC<EmbedProps> = ({
   const extensionContext = useContext<ExtensionContextData>(ExtensionContext)
   const [selectedTab, setSelectedTab] = React.useState(0)
   const [filters, setFilters] = React.useState({})
+  const [properties, setProperties] = React.useState<any>({})
+  const [tilesToHide, setTilesToHide] = React.useState<Array<number>>([])
   const { extensionSDK } = extensionContext
   const sdk = extensionContext.core40SDK
  
+  
+  useEffect(() => {
 
+    sdk.ok(sdk.dashboard(dashboards[selectedTab]['id']))
+    .then((x:any)=> {
+    })
+
+    sdk.dashboard_dashboard_elements(dashboards[selectedTab]['id'])
+    .then((x:any)=> {
+      x.value.forEach((element:any)=> {
+        const queryId = element?.result_maker?.query?.id
+        sdk.run_query({query_id:queryId, result_format:'json'})
+          .then((y) => {
+            if (y.value.length === 0) {
+              setTilesToHide([...tilesToHide, parseInt(element.id)])
+            }
+          })
+
+      })
+    });
+
+
+  },[dashboards[selectedTab]['id']])
+
+  useEffect(()=>{
+    if (properties && properties.options  && tilesToHide.length >0) {
+      setTilesToHide([])
+      let newLayouts: any = properties.options.layouts[0]
+        .dashboard_layout_components.filter((layout_component) => {
+          return !_.includes(tilesToHide, layout_component.dashboard_element_id)
+          // return layout_component.dashboard_element_id != elementId
+        })      
+      const newOptions = properties.options
+      newOptions.layouts[0].dashboard_layout_components = newLayouts 
+      dashboard.setOptions(newOptions)
+    }
+  }
+  ,[tilesToHide, properties])
+
+ 
   const StyledTabList = styled(TabList as any)`
     background-color: #f4f4f4;
     border-bottom: none;
@@ -115,6 +158,10 @@ export const EmbedDashboard: React.FC<EmbedProps> = ({
     setFilters(filters);
   };
 
+  const handleUpdateDashboardProperties = (properties: React.SetStateAction<{}>) => {
+    setProperties(properties);
+  };
+
   return (
     <>
     {configurationData.dashboards.length == 0 && (
@@ -155,6 +202,7 @@ export const EmbedDashboard: React.FC<EmbedProps> = ({
                     setDashboard={setupDashboard}
                     filters={filters}
                     handleUpdateFilters={handleUpdateFilters}
+                    handleUpdateDashboardProperties={handleUpdateDashboardProperties}
                   />
                 </TabPanel>
               )

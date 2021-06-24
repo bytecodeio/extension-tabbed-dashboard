@@ -12,8 +12,11 @@ export const Dashboard: React.FC<any> = ({
   extensionContext,
   setDashboard,
   filters,
-  handleUpdateFilters
+  handleUpdateFilters,
+  handleUpdateDashboardProperties
 }) => {
+
+  const sdk = extensionContext.core40SDK
 
   const openExploreInNewWindow = (event: any) => {
     const db = LookerEmbedSDK.createExploreWithUrl(event.url)
@@ -30,13 +33,7 @@ export const Dashboard: React.FC<any> = ({
     dashboard.setOptions(elementOptions as LookerDashboardOptions)
     setDashboard(dashboard)
     dashboard.setOptions(elementOptions as LookerDashboardOptions)
-
-  }
-
-  const runDashboard = () => {
-    if (dashboard) {
-      dashboard.run()
-    }
+    
   }
 
   const filtersUpdated = (jsEvent: { dashboard: { dashboard_filters: any; }; }) => {
@@ -44,7 +41,11 @@ export const Dashboard: React.FC<any> = ({
     if (dashboard) {
         dashboard.run();
     }
-};
+  };
+
+  const runCompleteLogger = (event:any) => {
+    handleUpdateDashboardProperties(event.dashboard)
+  }
 
   const embedCtrRef = useCallback(
     (el) => {
@@ -63,6 +64,7 @@ export const Dashboard: React.FC<any> = ({
           .on('drillmodal:explore', canceller)
           .on('dashboard:tile:explore', openExploreInNewWindow)
           .on('dashboard:tile:view', canceller)
+          .on('dashboard:run:complete', runCompleteLogger)
           .withFilters(filters)
           .build()
           .connect()

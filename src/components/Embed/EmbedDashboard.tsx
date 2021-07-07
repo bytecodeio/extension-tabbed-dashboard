@@ -52,18 +52,6 @@ export const EmbedDashboard: React.FC<EmbedProps> = ({
     sdk.ok(sdk.dashboard_dashboard_elements(dashboards[selectedTab]['id']))
     .then((x:[IDashboardElement])=> {
       investigateTiles(x)
-      // x.value.forEach((element:any)=> {
-      //   const queryId = element?.result_maker?.query?.id
-      //   if (queryId && queryId > 0) {
-      //   sdk.run_query({query_id:queryId, result_format:'json'})
-      //     .then((y) => {
-      //       console.log(y)
-      //       if (y.value?.length === 0) {
-      //         setTilesToHide([...tilesToHide, parseInt(element.id)])
-      //       }
-      //     })
-      //   }
-      // })
     });
   }
 
@@ -73,7 +61,6 @@ export const EmbedDashboard: React.FC<EmbedProps> = ({
     
     if (properties && properties.options  && tilesToHide.length >0) {
       console.log('hiding tiles:' + JSON.stringify(tilesToHide))
-      // setTilesToHide([])
       let newLayouts: any = properties.options.layouts[0]
         .dashboard_layout_components.filter((layout_component) => {
           return !_.includes(tilesToHide, layout_component.dashboard_element_id)
@@ -95,7 +82,7 @@ export const EmbedDashboard: React.FC<EmbedProps> = ({
         return Promise.resolve
       })
     const results = await Promise.allSettled(arrayOfPromises)
-    // @ts-ignore
+   
     const mappedResults = await results.map((x,i) => {
       if (x 
           && x.status === 'fulfilled' 
@@ -105,15 +92,7 @@ export const EmbedDashboard: React.FC<EmbedProps> = ({
     })
     const filteredResults = await mappedResults.filter(x => !!x)
     setTilesToHide(filteredResults)
-      // sdk.run_query({query_id:queryId, result_format:'json'})
-      //   .then((y) => {
-      //     console.log(y)
-      //     if (y.value?.length === 0) {
-      //       setTilesToHide([...tilesToHide, parseInt(element.id)])
-      //     }
-      //   })
-      // }
-    
+     
   }
 
   const StyledTabList = styled(TabList as any)`

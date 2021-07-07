@@ -1,3 +1,4 @@
+import { AnyAaaaRecord } from "dns";
 import { Dashboard, ConfigurationData } from "../../types";
 
 export interface EmbedProps {

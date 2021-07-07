@@ -26,6 +26,8 @@ import { Configure } from '../Configure/Configure'
 import { ConfigurationData } from '../../types'
 import _ from 'lodash'
 import { LookerDashboardOptions } from '@looker/embed-sdk/lib/types'
+import { IDashboardElement, IRequestSearchDashboardElements } from '@looker/sdk/lib/3.1/models'
+import { IWriteDashboardElement } from '@looker/sdk/lib/3.1/models'
 
 export const EmbedDashboard: React.FC<EmbedProps> = ({
   dashboards,
@@ -47,20 +49,21 @@ export const EmbedDashboard: React.FC<EmbedProps> = ({
   
   useEffect(() => {
     if (dashboards && dashboards[selectedTab]) {
-    sdk.dashboard_dashboard_elements(dashboards[selectedTab]['id'])
-    .then((x:any)=> {
-      x.value.forEach((element:any)=> {
-        const queryId = element?.result_maker?.query?.id
-        if (queryId && queryId > 0) {
-        sdk.run_query({query_id:queryId, result_format:'json'})
-          .then((y) => {
-            console.log(y)
-            if (y.value?.length === 0) {
-              setTilesToHide([...tilesToHide, parseInt(element.id)])
-            }
-          })
-        }
-      })
+    sdk.ok(sdk.dashboard_dashboard_elements(dashboards[selectedTab]['id']))
+    .then((x:[IDashboardElement])=> {
+      investigateTiles(x)
+      // x.value.forEach((element:any)=> {
+      //   const queryId = element?.result_maker?.query?.id
+      //   if (queryId && queryId > 0) {
+      //   sdk.run_query({query_id:queryId, result_format:'json'})
+      //     .then((y) => {
+      //       console.log(y)
+      //       if (y.value?.length === 0) {
+      //         setTilesToHide([...tilesToHide, parseInt(element.id)])
+      //       }
+      //     })
+      //   }
+      // })
     });
   }
 
@@ -82,7 +85,37 @@ export const EmbedDashboard: React.FC<EmbedProps> = ({
   }
   ,[tilesToHide, properties])
 
- 
+  const investigateTiles = async (dashboardElements: [IDashboardElement]) => {
+    let arrayOfPromises : any[] = 
+      dashboardElements.map((element:any)=> {
+        const queryId = element?.result_maker?.query?.id
+        if (queryId && queryId > 0) {
+          return sdk.ok(sdk.run_query({query_id:queryId, result_format:'json'}))
+        } 
+        return Promise.resolve
+      })
+    const results = await Promise.allSettled(arrayOfPromises)
+    // @ts-ignore
+    const mappedResults = await results.map((x,i) => {
+      if (x 
+          && x.status === 'fulfilled' 
+          && x.value
+          && x.value.length === 0
+      ) return parseInt(dashboardElements[i].id)
+    })
+    const filteredResults = await mappedResults.filter(x => !!x)
+    setTilesToHide(filteredResults)
+      // sdk.run_query({query_id:queryId, result_format:'json'})
+      //   .then((y) => {
+      //     console.log(y)
+      //     if (y.value?.length === 0) {
+      //       setTilesToHide([...tilesToHide, parseInt(element.id)])
+      //     }
+      //   })
+      // }
+    
+  }
+
   const StyledTabList = styled(TabList as any)`
     background-color: #f4f4f4;
     border-bottom: none;

@@ -21,14 +21,19 @@ import styled from 'styled-components'
 import { ConfigurationData, Dashboard } from '../../types'
 import { ConfigureProps } from './types'
 import {
-  Looker40SDK,
+  Looker40SDK
+} from '@looker/sdk'
+import {
+  ISDKSuccessResponse
+} from '@looker/sdk-rtl'
+import {
   NodeSession,
   NodeSettingsIniFile,
-  NodeSettings,
-  ISDKSuccessResponse,
-} from '@looker/sdk/lib/node'
+  NodeSettings
+} from '@looker/sdk-node'
 import { isInteger } from 'lodash'
 import { resolve6 } from 'dns'
+import { BsTrash,BsFillPlusCircleFill } from 'react-icons/bs'
 
 const SaveDashboardButton = styled(Button as any)`
 border-color: ${(props) => props.theme.colors.positive};
@@ -45,7 +50,7 @@ export const Configure: React.FC<ConfigureProps> = ({
   >({
     theme: '',
     dashboards: [
-      { id: '', title: '', next: false } as Dashboard,
+      { id: '', title: '', next: true } as Dashboard,
     ],
     configRoles: [] 
   } as ConfigurationData)
@@ -141,8 +146,7 @@ export const Configure: React.FC<ConfigureProps> = ({
   }
 
   const changeDashboardNext = (index: number) => {
-    localConfigurationData.dashboards[index]['next'] = !localConfigurationData
-      .dashboards[index]['next']
+    localConfigurationData.dashboards[index]['next'] = true
     setLocalConfigurationData({ ...localConfigurationData })
   }
 
@@ -212,10 +216,9 @@ export const Configure: React.FC<ConfigureProps> = ({
                   }
                 />
                 <IconButton
-                      icon="Trash"
+                      icon={ <BsTrash /> }
                       label="Delete Dashboard"
                       size="small"
-                      color="critical"
                       onClick={() => deleteRole(index)}
                     />
                     </Space>
@@ -224,7 +227,7 @@ export const Configure: React.FC<ConfigureProps> = ({
           })}
 
           <Space>
-            <Button iconBefore="CircleAdd" onClick={() => addConfigRole()}>
+            <Button iconBefore={ <BsFillPlusCircleFill /> } onClick={() => addConfigRole()}>
               Add Role
             </Button>
           </Space>
@@ -234,7 +237,7 @@ export const Configure: React.FC<ConfigureProps> = ({
           <Heading as="h3">Configure Dashboard Tabs</Heading>
 
           {localConfigurationData.dashboards.map(
-            ({ id, title, next }, index) => {
+            ({ id, title }, index) => {
               return (
                 <div key={`id + title + ${index+1}`}>
                   <Space>
@@ -258,16 +261,10 @@ export const Configure: React.FC<ConfigureProps> = ({
                         )
                       }
                     />
-                    <FieldCheckbox
-                      label="Next"
-                      checked={next}
-                      onChange={() => changeDashboardNext(index)}
-                    />
                     <IconButton
-                      icon="Trash"
+                      icon={ <BsTrash /> }
                       label="Delete Dashboard"
                       size="small"
-                      color="critical"
                       onClick={() => deleteDashboard(index)}
                     />
                   </Space>
@@ -277,7 +274,7 @@ export const Configure: React.FC<ConfigureProps> = ({
           )}
 
           <Space>
-            <Button iconBefore="CircleAdd" onClick={() => addDashboard()}>
+            <Button iconBefore={ <BsFillPlusCircleFill /> }  onClick={() => addDashboard()}>
               Add Dashboard
             </Button>
           </Space>

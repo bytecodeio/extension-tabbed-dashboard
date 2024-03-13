@@ -29,7 +29,7 @@ export const Dashboard: React.FC<any> = ({
     dashboard.setOptions(elementOptions as LookerDashboardOptions)
     setDashboard(dashboard)
     dashboard.setOptions(elementOptions as LookerDashboardOptions)
-    
+
   }
 
   const embedCtrRef = useCallback(
@@ -55,6 +55,7 @@ export const Dashboard: React.FC<any> = ({
 
   return (
     <>
+
       <EmbedContainer ref={embedCtrRef} />
     </>
   )

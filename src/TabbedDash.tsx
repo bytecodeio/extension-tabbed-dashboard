@@ -1,8 +1,9 @@
-import React, { useEffect, useState, useContext } from 'react'
+import React, { Fragment, useEffect, useState, useContext } from 'react'
 import { Route, Redirect } from 'react-router-dom'
 import styled from 'styled-components'
 import * as semver from 'semver'
-import { Box, ComponentsProvider, MessageBar } from '@looker/components'
+import { Accordion, Col, Form, Row, Button, Nav, Container } from "react-bootstrap";
+import { Box, ComponentsProvider, MessageBar, Theme } from '@looker/components'
 import {
   ExtensionContext,
   ExtensionContextData,
@@ -10,6 +11,9 @@ import {
 import { EmbedDashboard } from './components/Embed'
 import { TabbedDashProps, ConfigurationData } from './types'
 import { allowedNodeEnvironmentFlags } from 'process'
+import { drawerWidth, toolbarHeight } from "./utils/constants";
+
+import { TopAppBar } from "./components/TopAppBar/TopAppBar";
 
 export enum ROUTES {
   EMBED_DASHBOARD = '/',
@@ -54,7 +58,7 @@ export const TabbedDash: React.FC<TabbedDashProps> = ({
       setConfigurationData(
         context || {
           theme: 'Looker',
-          dashboards: [ 
+          dashboards: [
           ],
           configRoles: [ ''
           ],
@@ -116,31 +120,47 @@ export const TabbedDash: React.FC<TabbedDashProps> = ({
     return false
   }
 
+
+let baseUrl = extensionSDK.lookerHostData.hostUrl
+
+console.log(baseUrl)
+
   return (
     <>
-      {configurationData && (
-        <ComponentsProvider>
-          {initializeError ? (
-            <MessageBar intent="critical">{initializeError}</MessageBar>
-          ) : (
-              <Route path={ROUTES.EMBED_DASHBOARD}>
-                <EmbedDashboard
-                  dashboards={configurationData.dashboards}
-                  configurationData={configurationData}
-                  updateConfigurationData={updateConfigurationData}
-                  isAdmin={isAdmin}
-                />
-              </Route>
-          )}
-        </ComponentsProvider>
-      )}
+
+
+
+    <TopAppBar/>
+
+
+<div class="main-sidemenu">
+
+
+   {configurationData && (
+      <ComponentsProvider>
+        {initializeError ? (
+          <MessageBar intent="critical">{initializeError}</MessageBar>
+        ) : (
+            <Route path={ROUTES.EMBED_DASHBOARD}>
+              <EmbedDashboard
+
+                dashboards={configurationData.dashboards}
+                configurationData={configurationData}
+                updateConfigurationData={updateConfigurationData}
+                isAdmin={isAdmin}
+              />
+            </Route>
+        )}
+      </ComponentsProvider>
+    )}
+
+
+
+
+
+</div>
+
+
     </>
   )
 }
-
-export const Layout = styled(Box as any)`
-  display: grid;
-  grid-gap: 20px;
-  grid-template-columns: 200px auto;
-  width: 100vw;
-`

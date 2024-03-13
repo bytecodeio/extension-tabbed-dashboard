@@ -52,7 +52,7 @@ export const Configure: React.FC<ConfigureProps> = ({
     dashboards: [
       { id: '', title: '', next: true } as Dashboard,
     ],
-    configRoles: [] 
+    configRoles: []
   } as ConfigurationData)
   const extensionContext = useContext<ExtensionContextData>(ExtensionContext)
   const { extensionSDK } = extensionContext
@@ -99,6 +99,9 @@ export const Configure: React.FC<ConfigureProps> = ({
       configRoles: localConfigurationData.configRoles,
     })
   }
+
+
+  console.log(localConfigurationData, "localConfigurationData")
 
   const addConfigRole = () => {
     setLocalConfigurationData({
@@ -183,6 +186,17 @@ export const Configure: React.FC<ConfigureProps> = ({
 
   const validationMessages = getValidationMessages()
 
+
+  // 
+  // const getDashboards = async (configurationData, responseMap) => {
+  //
+  //   const response = await sdk.ok(sdk.folder_dashboards(configurationData, "id, title"));
+  //   responseMap[configurationData] = response;
+  //   console.log(response, "elizabeth")
+  // };
+  //
+  // console.log(configurationData)
+
   return (
     <div>
       <Heading mt="xlarge">Dashboards Configuration</Heading>
@@ -191,10 +205,10 @@ export const Configure: React.FC<ConfigureProps> = ({
         <Form
           onSubmit={onConfigChangeSubmit}
         >
-          <Divider mt="medium" appearance="onDark" />
-          <Heading as="h3">Dashboard Theme</Heading>
 
-          <FieldText
+
+
+          {/*<FieldText
             value={localConfigurationData.theme}
             onChange={changeTheme}
           />
@@ -226,11 +240,11 @@ export const Configure: React.FC<ConfigureProps> = ({
             )
           })}
 
-          <Space>
+        <Space>
             <Button iconBefore={ <BsFillPlusCircleFill /> } onClick={() => addConfigRole()}>
               Add Role
             </Button>
-          </Space>
+          </Space>*/}
 
           <Divider mt="medium" appearance="onDark" />
 
@@ -261,12 +275,8 @@ export const Configure: React.FC<ConfigureProps> = ({
                         )
                       }
                     />
-                    <IconButton
-                      icon={ <BsTrash /> }
-                      label="Delete Dashboard"
-                      size="small"
-                      onClick={() => deleteDashboard(index)}
-                    />
+                    <i class="fas fa-trash red" onClick={() => deleteDashboard(index)}></i>
+
                   </Space>
                 </div>
               )
@@ -274,8 +284,8 @@ export const Configure: React.FC<ConfigureProps> = ({
           )}
 
           <Space>
-            <Button iconBefore={ <BsFillPlusCircleFill /> }  onClick={() => addDashboard()}>
-              Add Dashboard
+            <Button   onClick={() => addDashboard()}>
+              <i class="fas fa-folder-plus pe-1"></i> Add Dashboard
             </Button>
           </Space>
 

@@ -25,6 +25,8 @@ export const EmbedDashboard: React.FC<EmbedProps> = ({
   configurationData,
   updateConfigurationData,
   isAdmin,
+  isOpen,
+  setIsOpen
 }) => {
   const [running, setRunning] = React.useState(true)
   const [dashboard, setDashboard] = React.useState<LookerEmbedDashboard>()
@@ -32,9 +34,9 @@ export const EmbedDashboard: React.FC<EmbedProps> = ({
   const [tabId, setTabId] = React.useState('0')
 
   const configIconLocation = {
-    position: 'absolute' as 'absolute',
-    right: '1em',
-    top: '1em',
+    position: 'fixed',
+    left: '1em',
+    bottom: '1em',
     zIndex: 999,
   }
 
@@ -45,13 +47,17 @@ export const EmbedDashboard: React.FC<EmbedProps> = ({
   const handleSelectedTab = (index: string) => {
     setTabId(index)
   }
-  
+
+
+
+
   return (
     <>
-    {configurationData.dashboards.length == 0 && (
+
+    {configurationData.dashboards?.length == 0 && (
       <Box m="large" >
         <SpaceVertical>
-      <Heading>Welcome to the Tabbed Dashboards Extension</Heading>
+
 
           <Paragraph>
             Please configure dashboards with the configuration icon at the right of the page.
@@ -59,25 +65,27 @@ export const EmbedDashboard: React.FC<EmbedProps> = ({
           </SpaceVertical>
       </Box>
     )}
-    {configurationData.dashboards.length > 0 && (
+    {configurationData.dashboards?.length > 0 && (
         <Tabs2
+
           tabId={tabId}
           onTabChange={(index) => handleSelectedTab(index.toString())}
         >
           {configurationData.dashboards.map(({ title }, index) => {
-            return <Tab2 
-              key={index.toString()} 
-              id={index.toString()} 
+            return <Tab2
+
+              key={index.toString()}
+              id={index.toString()}
               label={title}
             >
               <Dashboard
-                    key={index.toString()} 
+                    key={index.toString()}
                     id={configurationData.dashboards[index]['id']}
                     running={running}
                     theme={configurationData.theme}
                     extensionContext={extensionContext}
                     setDashboard={setupDashboard}
-                  />  
+                  />
             </Tab2>
           })}
         </Tabs2>
@@ -85,6 +93,7 @@ export const EmbedDashboard: React.FC<EmbedProps> = ({
     {isAdmin ? (
         <div style={configIconLocation}>
           <Dialog
+           open={isOpen} fullWidth maxWidth="none" id="adminModal"
             content={
               <DialogContent>
                 <Configure
@@ -94,16 +103,15 @@ export const EmbedDashboard: React.FC<EmbedProps> = ({
               </DialogContent>
             }
           >
-            <IconButton
-              icon={<BsGear />}
-              label="Configure Dashboards"
-              size="medium"
-            />
+          <div class="across">
+          <i class="fas fa-cog gray pe-1"></i>
+            <p class="gray">ADMIN</p>
+            </div>
           </Dialog>
         </div>
     ) : (
         ''
-      )} 
+      )}
     </>
   )
 }
